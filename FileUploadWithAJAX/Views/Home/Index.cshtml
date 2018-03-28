@@ -1,0 +1,64 @@
+﻿@{
+	ViewBag.Title = "Home Page";
+}
+@using (Html.BeginForm("save", "home", FormMethod.Post, new { @role = "form" }))
+{
+	<table>
+		<tr>
+			<td>
+				Upload File
+			</td>
+			<td>
+				@Html.TextBox("test","", new { @type = "file", @multiple = "multiple", @class = "fileupload" })
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<button type="button" class="save">Save</button>
+			</td>
+		</tr>
+	</table>
+}
+@section Scripts{
+	<script>
+
+		$(document).ready(function () {
+			$('.save').click(function () {
+				debugger;
+				// Checking whether FormData is available in browser
+				if (window.FormData !== undefined) {
+
+					var fileUpload = $(".fileupload").get(0);
+					var files = fileUpload.files;
+
+					// Create FormData object
+					var fileData = new FormData();
+
+					// Looping over all files and add it to FormData object
+					for (var i = 0; i < files.length; i++) {
+						fileData.append(files[i].name, files[i]);
+					}
+
+					// Adding one more key to FormData object
+					//fileData.append('username', Manas);
+
+					$.ajax({
+						url: '/Home/save',
+						type: "POST",
+						contentType: false, // Not to set any content header
+						processData: false, // Not to process data
+						data: fileData,
+						success: function (result) {
+							alert(result);
+						},
+						error: function (err) {
+							alert(err.statusText);
+						}
+					});
+				} else {
+					alert("FormData is not supported.");
+				}
+			});
+		});
+	</script>
+}
